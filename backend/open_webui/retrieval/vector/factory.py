@@ -4,6 +4,7 @@ from fastapi import HTTPException
 from open_webui.config import (
     ENABLE_MILVUS_MULTITENANCY_MODE,
     ENABLE_QDRANT_MULTITENANCY_MODE,
+    ENABLE_WEAVIATE_MULTITENANCY_MODE,
     VECTOR_DB,
 )
 from open_webui.env import USE_SLIM
@@ -86,9 +87,16 @@ class Vector:
 
                 return Oracle23aiClient()
             case VectorType.WEAVIATE:
-                from open_webui.retrieval.vector.dbs.weaviate import WeaviateClient
+                if ENABLE_WEAVIATE_MULTITENANCY_MODE:
+                    from open_webui.retrieval.vector.dbs.weaviate_multitenancy import (
+                        WeaviateClient,
+                    )
 
-                return WeaviateClient()
+                    return WeaviateClient()
+                else:
+                    from open_webui.retrieval.vector.dbs.weaviate import WeaviateClient
+
+                    return WeaviateClient()
             case VectorType.VALKEY:
                 from open_webui.retrieval.vector.dbs.valkey import ValkeyClient
 

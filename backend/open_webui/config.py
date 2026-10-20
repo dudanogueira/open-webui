@@ -634,6 +634,12 @@ WEAVIATE_API_KEY = os.getenv('WEAVIATE_API_KEY')
 WEAVIATE_HTTP_SECURE = os.getenv('WEAVIATE_HTTP_SECURE', 'false').lower() == 'true'
 WEAVIATE_GRPC_SECURE = os.getenv('WEAVIATE_GRPC_SECURE', 'false').lower() == 'true'
 WEAVIATE_SKIP_INIT_CHECKS = os.getenv('WEAVIATE_SKIP_INIT_CHECKS', 'false').lower() == 'true'
+# One of: none, pq, bq, sq, rq. Empty leaves it to the server default. Only affects new collections.
+WEAVIATE_QUANTIZATION = os.getenv('WEAVIATE_QUANTIZATION', '').strip().lower()
+# Off by default: existing deployments keep one Weaviate collection per Open WebUI collection.
+ENABLE_WEAVIATE_MULTITENANCY_MODE = os.getenv('ENABLE_WEAVIATE_MULTITENANCY_MODE', 'false').lower() == 'true'
+# Must start with a letter; it becomes the start of a Weaviate class name.
+WEAVIATE_COLLECTION_PREFIX = os.getenv('WEAVIATE_COLLECTION_PREFIX', 'OpenWebUI')
 
 # OpenSearch
 OPENSEARCH_URI = os.getenv('OPENSEARCH_URI', 'https://localhost:9200')

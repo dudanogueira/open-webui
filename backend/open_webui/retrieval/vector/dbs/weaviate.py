@@ -17,6 +17,7 @@ from open_webui.config import (
     WEAVIATE_HTTP_SECURE,
     WEAVIATE_SKIP_INIT_CHECKS,
 )
+from open_webui.env import VERSION
 from open_webui.retrieval.vector.main import (
     GetResult,
     SearchResult,
@@ -24,6 +25,12 @@ from open_webui.retrieval.vector.main import (
     VectorItem,
 )
 from open_webui.retrieval.vector.utils import iter_filter_conditions, process_metadata
+
+# Weaviate (1.38.0+) attributes traffic to the integration that produced it through this
+# header, so operators of a shared cluster can tell Open WebUI's requests apart from other
+# apps using the same client library. Older servers ignore it. Sent on both HTTP and gRPC.
+WEAVIATE_INTEGRATION_HEADER = 'X-Weaviate-Client-Integration'
+WEAVIATE_INTEGRATION_NAME = f'open-webui/{VERSION}'
 
 
 def _convert_uuids_to_strings(obj: Any) -> Any:
@@ -81,6 +88,7 @@ class WeaviateClient(VectorDBBase):
                 'grpc_port': WEAVIATE_GRPC_PORT,
                 'grpc_secure': WEAVIATE_GRPC_SECURE,
                 'skip_init_checks': WEAVIATE_SKIP_INIT_CHECKS,
+                'headers': {WEAVIATE_INTEGRATION_HEADER: WEAVIATE_INTEGRATION_NAME},
             }
 
             # Only add auth_credentials if WEAVIATE_API_KEY exists and is not empty
